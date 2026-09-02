@@ -170,8 +170,29 @@ input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(74,144,226,.12)
 .seat-number{width:28px;height:28px;border-radius:7px;background:#edf4fa;color:var(--blue);display:grid;place-items:center;font-size:9px;font-weight:900}
 .seat-name{font-size:11px;font-weight:900;color:var(--navy);line-height:1.25}
 .seat-title{display:block;font-size:9px;color:var(--muted);line-height:1.4;margin-top:2px}
-.seat-person.moderator{background:#f2f7fb;border:1px solid rgba(23,105,170,.22);border-radius:9px;padding:10px}
-.seat-person.moderator .seat-number{background:var(--navy);color:#fff}
+.seat-person.moderator{
+  background:#f2f7fb;
+  border:1px solid rgba(23,105,170,.22);
+  border-radius:9px;
+  padding:10px
+}
+
+.seat-person.moderator .seat-number{
+  background:var(--navy);
+  color:#fff
+}
+
+.seat-person.presenter{
+  background:#f3faf6;
+  border:1px solid rgba(32,164,100,.22);
+  border-radius:9px;
+  padding:10px
+}
+
+.seat-person.presenter .seat-number{
+  background:var(--green);
+  color:#fff
+}
 .data-error{font-size:10px;line-height:1.5;color:#9a3c3c;background:#fff3f3;border:1px solid #f0cccc;border-radius:9px;padding:11px;margin-top:10px}
 .seat-columns{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px}
 .seat-group{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px}
@@ -371,9 +392,19 @@ input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(74,144,226,.12)
       <div class="seat-columns">
         <div class="seat-group"><h4>Direksi · 01—06</h4><p>Enam posisi Direksi</p><div class="seat-grid" id="direksiSeats"></div></div>
         <div class="seat-group"><h4>SL · 01—06</h4><p>Sisi kiri</p><div class="seat-grid" id="slLeftSeats"></div></div>
-        <div class="seat-group"><h4>SL · 07—12</h4><p>Sisi kanan · SL 07 Moderator</p><div class="seat-grid" id="slRightSeats"></div></div>
+        <div class="seat-group">
+          <h4>SL · 07—12</h4>
+          <p>Sisi kanan · SL 07 Presenter</p>
+          <div class="seat-grid" id="slRightSeats"></div>
+        </div>
       </div>
-      <div class="callout"><strong>MODERATOR — SL 7</strong><span>Posisi di sisi kanan Direksi, dekat Matadoor / Videotron.</span></div>
+      <div class="callout">
+        <strong>MODERATOR — SL 6 · PRESENTER — SL 7</strong>
+        <span>
+          SL 6 berfungsi sebagai Moderator dan SL 7 sebagai Presenter.
+          Pastikan name plate dan posisi kursi mengikuti master data peserta.
+        </span>
+      </div>
       <div class="rules"><div class="rule-box"><strong>18</strong><span>KURSI</span></div><div class="rule-box"><strong>6</strong><span>DIREKSI</span></div><div class="rule-box"><strong>6 + 6</strong><span>SL KIRI + KANAN</span></div></div>
     </div>
   </div>
