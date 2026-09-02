@@ -528,29 +528,56 @@ input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(74,144,226,.12)
   }
 
   function renderSeats(items){
-    const direksi=items.filter(x=>String(x.posisi).toLowerCase()==="direksi")
-      .sort((a,b)=>Number(a.kursi)-Number(b.kursi));
-    const sl=items.filter(x=>String(x.posisi).toLowerCase()==="sl")
-      .sort((a,b)=>Number(a.kursi)-Number(b.kursi));
+  const direksi=items.filter(x=>String(x.posisi).toLowerCase()==="direksi")
+    .sort((a,b)=>Number(a.kursi)-Number(b.kursi));
 
-    const makeSeat=item=>{
-      const isModerator=Number(item.kursi)===7 && String(item.posisi).toLowerCase()==="sl";
-      const name=item.nama || (isModerator ? "MODERATOR" : "BELUM DIISI");
-      const title=item.jabatan || "";
-      return `<div class="seat-person ${isModerator ? "moderator":""}">
-        <div class="seat-number">${String(item.kursi).padStart(2,"0")}</div>
-        <div><div class="seat-name">${escapeHTML(name)}</div>
-        <span class="seat-title">${escapeHTML(title)}</span></div>
-      </div>`;
-    };
+  const sl=items.filter(x=>String(x.posisi).toLowerCase()==="sl")
+    .sort((a,b)=>Number(a.kursi)-Number(b.kursi));
 
-    $("#direksiSeats").innerHTML=direksi.map(makeSeat).join("") ||
-      '<div class="data-error">Data Direksi belum tersedia.</div>';
-    $("#slLeftSeats").innerHTML=sl.filter(x=>Number(x.kursi)<=6).map(makeSeat).join("") ||
-      '<div class="data-error">Data SL 01–06 belum tersedia.</div>';
-    $("#slRightSeats").innerHTML=sl.filter(x=>Number(x.kursi)>=7).map(makeSeat).join("") ||
-      '<div class="data-error">Data SL 07–12 belum tersedia.</div>';
-  }
+  const makeSeat=item=>{
+    const kursi=Number(item.kursi);
+    const posisi=String(item.posisi).toLowerCase();
+
+    // Role khusus berdasarkan posisi kursi
+    const isModerator = posisi==="sl" && kursi===6;
+    const isPresenter = posisi==="sl" && kursi===7;
+
+    let name = item.nama || "BELUM DIISI";
+    let title = item.jabatan || "";
+
+    // Jika nama/jabatan kosong, tampilkan role sesuai posisi khusus
+    if(isModerator && !item.nama){
+      name="MODERATOR";
+    }
+
+    if(isPresenter && !item.nama){
+      name="PRESENTER";
+    }
+
+    return `<div class="seat-person ${isModerator ? "moderator":""} ${isPresenter ? "presenter":""}">
+      <div class="seat-number">${String(kursi).padStart(2,"0")}</div>
+      <div>
+        <div class="seat-name">${escapeHTML(name)}</div>
+        <span class="seat-title">${escapeHTML(title)}</span>
+      </div>
+    </div>`;
+  };
+
+  $("#direksiSeats").innerHTML=direksi.map(makeSeat).join("") ||
+    '<div class="data-error">Data Direksi belum tersedia.</div>';
+
+  $("#slLeftSeats").innerHTML=sl
+    .filter(x=>Number(x.kursi)<=6)
+    .map(makeSeat)
+    .join("") ||
+    '<div class="data-error">Data SL 01–06 belum tersedia.</div>';
+
+  $("#slRightSeats").innerHTML=sl
+    .filter(x=>Number(x.kursi)>=7)
+    .map(makeSeat)
+    .join("") ||
+    '<div class="data-error">Data SL 07–12 belum tersedia.</div>';
+}
 
   async function loadSeatData(){
     const btn=$("#refreshData"), errorBox=$("#dataError");
