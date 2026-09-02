@@ -2270,7 +2270,7 @@
           </div>
         </div>
         <div class="media hero-photo">
-          <img src="assets/layout-ruang.png" alt="Acuan visual layout ruang rapat"
+          <img src="assets/layout-ruang.png?v=3" alt="Acuan visual layout ruang rapat"
             onload="this.nextElementSibling.style.display='none'" onerror="this.style.display='none'">
           <div class="fallback"><strong>[ FOTO REFERENSI BELUM TERSEDIA ]</strong><span>assets/layout-ruang.png</span>
           </div>
@@ -2692,17 +2692,8 @@
           const timeVal = $('input[data-field="time"]').value || "[Belum diisi]";
           const dateVal = $('input[data-field="date"]').value || "[Belum diisi]";
           
-          const message = `Semangat pagi, saat ini pukul ${timeVal} Infrastruktur non-elektronik untuk Rapat direksi ${dateVal}.
-
-Untuk kesiapan infra non-elektronik,
-- Balliner✅
-- Block Note✅
-- Papan Nama BOD✅
-- Papan Nama Presenter✅ (${presenterName})
-
-Note : -
-
-Demikian disampaikan, terima kasih`;
+          // Menggunakan unicode \u2705 untuk emoji ceklis agar terhindar dari error encoding
+          const message = `Semangat pagi, saat ini pukul ${timeVal} Infrastruktur non-elektronik untuk Rapat direksi ${dateVal}.\n\nUntuk kesiapan infra non-elektronik,\n- Balliner \u2705\n- Block Note \u2705\n- Papan Nama BOD \u2705\n- Papan Nama Presenter \u2705 (${presenterName})\n\nNote : -\n\nDemikian disampaikan, terima kasih`;
 
           // Ganti dengan format wa.me dan encode URL
           const waUrl = `https://wa.me/6282213741911?text=${encodeURIComponent(message)}`;
