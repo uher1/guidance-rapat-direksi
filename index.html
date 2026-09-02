@@ -3176,184 +3176,207 @@ input:focus{
 
   function renderSeats(items){
 
-    const direksi =
-      items
-        .filter(
-          x =>
-            String(x.posisi).trim().toLowerCase()
-            === "direksi"
-        )
-        .sort(
-          (a,b) =>
-            Number(a.kursi) - Number(b.kursi)
-        );
+  const direksi =
+    items
+      .filter(
+        x =>
+          String(x.posisi).trim().toLowerCase() === "direksi"
+      )
+      .sort(
+        (a,b) =>
+          Number(a.kursi) - Number(b.kursi)
+      );
 
 
-    const sl =
-      items
-        .filter(
-          x =>
-            String(x.posisi).trim().toLowerCase()
-            === "sl"
-        )
-        .sort(
-          (a,b) =>
-            Number(a.kursi) - Number(b.kursi)
-        );
+  const sl =
+    items
+      .filter(
+        x =>
+          String(x.posisi).trim().toLowerCase() === "sl"
+      )
+      .sort(
+        (a,b) =>
+          Number(a.kursi) - Number(b.kursi)
+      );
 
 
-    function makeSeat(item){
+  function makeSeat(item){
 
-      const kursi = Number(item.kursi);
+    const kursi = Number(item.kursi);
 
-      const posisi =
-        String(item.posisi)
-          .trim()
-          .toLowerCase();
-
-
-      /*
-       * ROLE KHUSUS
-       *
-       * SL 06 = MODERATOR
-       * SL 07 = PRESENTER
-       */
-
-      const isModerator =
-        posisi === "sl" &&
-        kursi === 6;
-
-      const isPresenter =
-        posisi === "sl" &&
-        kursi === 7;
+    const posisi =
+      String(item.posisi)
+        .trim()
+        .toLowerCase();
 
 
-      /*
-       * Nama tetap mengikuti Google Spreadsheet.
-       *
-       * Jika nama kosong:
-       * SL 06 → MODERATOR
-       * SL 07 → PRESENTER
-       */
+    /*
+     =========================================================
+     ROLE KHUSUS BERDASARKAN NOMOR KURSI
 
-      let name =
-        item.nama ||
-        "BELUM DIISI";
+     SL 06 = MODERATOR
+     SL 07 = PRESENTER
 
+     Role ini HARUS override jabatan dari Google Spreadsheet.
+     =========================================================
+    */
 
-      let title =
-        item.jabatan ||
-        "";
+    const isModerator =
+      posisi === "sl" &&
+      kursi === 6;
 
-
-      if(isModerator && !item.nama){
-        name = "MODERATOR";
-      }
+    const isPresenter =
+      posisi === "sl" &&
+      kursi === 7;
 
 
-      if(isPresenter && !item.nama){
-        name = "PRESENTER";
-      }
+    /*
+     =========================================================
+     NAMA
+     
+     Nama tetap mengikuti Google Spreadsheet.
+     =========================================================
+    */
+
+    const name =
+      item.nama ||
+      "BELUM DIISI";
 
 
-      /*
-       * Jika jabatan kosong pada kursi khusus,
-       * tampilkan role secara otomatis.
-       */
+    /*
+     =========================================================
+     JABATAN / ROLE
 
-      if(isModerator && !title){
-        title = "MODERATOR";
-      }
+     Default:
+       ambil dari Google Spreadsheet
 
+     Khusus:
+       SL 06 → MODERATOR
+       SL 07 → PRESENTER
+     =========================================================
+    */
 
-      if(isPresenter && !title){
-        title = "PRESENTER";
-      }
-
-
-      const roleClass =
-        isModerator
-          ? "moderator"
-          : isPresenter
-            ? "presenter"
-            : "";
+    let title =
+      item.jabatan ||
+      "";
 
 
-      return `
-        <div class="seat-person ${roleClass}">
+    if(isModerator){
 
-          <div class="seat-number">
-            ${String(kursi).padStart(2,"0")}
-          </div>
-
-          <div>
-
-            <div class="seat-name">
-              ${escapeHTML(name)}
-            </div>
-
-            <span class="seat-title">
-              ${escapeHTML(title)}
-            </span>
-
-          </div>
-
-        </div>
-      `;
+      title = "MODERATOR";
 
     }
 
 
-    /* ========================================================
-       DIREKSI 01—06
-    ======================================================== */
+    if(isPresenter){
 
-    $("#direksiSeats").innerHTML =
-      direksi.map(makeSeat).join("") ||
+      title = "PRESENTER";
 
-      '<div class="data-error">' +
-      'Data Direksi belum tersedia.' +
-      '</div>';
+    }
 
 
-    /* ========================================================
-       SL KIRI 01—06
+    /*
+     =========================================================
+     CLASS VISUAL
+     =========================================================
+    */
 
-       SL 06 = MODERATOR
-    ======================================================== */
+    let roleClass = "";
 
-    $("#slLeftSeats").innerHTML =
-      sl
-        .filter(
-          x => Number(x.kursi) <= 6
-        )
-        .map(makeSeat)
-        .join("") ||
+    if(isModerator){
 
-      '<div class="data-error">' +
-      'Data SL 01–06 belum tersedia.' +
-      '</div>';
+      roleClass = "moderator";
+
+    }else if(isPresenter){
+
+      roleClass = "presenter";
+
+    }
 
 
-    /* ========================================================
-       SL KANAN 07—12
+    return `
+      <div class="seat-person ${roleClass}">
 
-       SL 07 = PRESENTER
-    ======================================================== */
+        <div class="seat-number">
+          ${String(kursi).padStart(2,"0")}
+        </div>
 
-    $("#slRightSeats").innerHTML =
-      sl
-        .filter(
-          x => Number(x.kursi) >= 7
-        )
-        .map(makeSeat)
-        .join("") ||
+        <div>
 
-      '<div class="data-error">' +
-      'Data SL 07–12 belum tersedia.' +
-      '</div>';
+          <div class="seat-name">
+            ${escapeHTML(name)}
+          </div>
+
+          <span class="seat-title">
+            ${escapeHTML(title)}
+          </span>
+
+        </div>
+
+      </div>
+    `;
 
   }
+
+
+  /*
+   =========================================================
+   DIREKSI 01—06
+   =========================================================
+  */
+
+  $("#direksiSeats").innerHTML =
+    direksi
+      .map(makeSeat)
+      .join("") ||
+
+    '<div class="data-error">' +
+    'Data Direksi belum tersedia.' +
+    '</div>';
+
+
+  /*
+   =========================================================
+   SL KIRI 01—06
+   SL 06 = MODERATOR
+   =========================================================
+  */
+
+  $("#slLeftSeats").innerHTML =
+    sl
+      .filter(
+        x => Number(x.kursi) >= 1 &&
+             Number(x.kursi) <= 6
+      )
+      .map(makeSeat)
+      .join("") ||
+
+    '<div class="data-error">' +
+    'Data SL 01–06 belum tersedia.' +
+    '</div>';
+
+
+  /*
+   =========================================================
+   SL KANAN 07—12
+   SL 07 = PRESENTER
+   =========================================================
+  */
+
+  $("#slRightSeats").innerHTML =
+    sl
+      .filter(
+        x => Number(x.kursi) >= 7 &&
+             Number(x.kursi) <= 12
+      )
+      .map(makeSeat)
+      .join("") ||
+
+    '<div class="data-error">' +
+    'Data SL 07–12 belum tersedia.' +
+    '</div>';
+
+}
 
 
   /* ==========================================================
